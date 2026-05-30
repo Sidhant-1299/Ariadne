@@ -2,13 +2,17 @@
 
 > A human-guided thread through complex digital systems.
 
-**Ariadne** is a human-in-the-loop cybersecurity research harness designed to preserve context, structure vulnerability research, and turn scattered observations into testable hypotheses.
+**Ariadne** is a human-in-the-loop cybersecurity research harness designed to augment the capability of a security researcher.
 
-It is not an autonomous hacker.  
-It is not a payload spammer.  
-It is not a scanner pretending to be intelligence.
+It preserves target context, generates testable hypotheses, suggests creative payload directions, tracks data flow across requests, provides recon support, critiques evidence, and reduces the friction of moving from observation to validated finding.
 
-Ariadne exists to help a security researcher navigate complex systems without losing the thread.
+Ariadne is not an autonomous hacker.
+
+It is a group of specialized research agents organized around one human operator.
+
+The human explores, judges, tests, validates, and reports.
+
+Ariadne remembers, connects, suggests, challenges, and accelerates.
 
 ---
 
@@ -23,13 +27,13 @@ Labyrinth       -> complex digital system
 Thread          -> persistent research context
 Theseus         -> human security researcher
 Minotaur        -> hidden vulnerability or unknown behavior
-Ariadne         -> guiding intelligence and memory harness
+Ariadne         -> guiding intelligence and agentic research harness
 Return path     -> evidence, reproduction steps, and report
 ```
 
 Ariadne does not replace the researcher.
 
-It gives the researcher the thread.
+It gives the researcher the thread, the map, the tools, the suggestions, and the memory required to move through the maze with more force and precision.
 
 ---
 
@@ -37,44 +41,52 @@ It gives the researcher the thread.
 
 Modern security research does not fail only because of a lack of tools.
 
-It often fails because context gets lost.
+It often fails because the researcher loses context, repeats work, misses relationships between requests, forgets assumptions, or wastes energy translating observations into next actions.
 
 A researcher may inspect dozens of endpoints, switch between multiple accounts, test several roles, modify object IDs, compare responses, review JavaScript, examine headers, and repeat similar tests across different flows.
 
 The hard part is not simply generating more payloads.
 
-The hard part is remembering:
+The hard part is knowing:
 
-- what was tested
-- why it was tested
-- what changed
-- what failed
-- what remained uncertain
-- what evidence supports a hypothesis
-- what evidence weakens it
-- what the next best test should be
+- what to test next
+- why that test matters
+- which payload family fits the context
+- which request influences another request downstream
+- which endpoint shares object state with another endpoint
+- which behavior is actually interesting
+- which evidence supports a vulnerability
+- which evidence weakens it
+- which path has already failed
+- which path is worth revisiting
 
-Ariadne treats **context as the core asset**.
+Ariadne treats **context as the core asset** and **augmentation as the product**.
 
 ---
 
 ## Design Doctrine
 
-Ariadne is built around five principles:
+Ariadne is built around seven principles:
 
 1. **The human holds the thread**  
-   The researcher remains responsible for judgment, testing, validation, and escalation.
+   The researcher remains responsible for judgment, testing, validation, ethics, and escalation.
 
 2. **Context is the foundation**  
    Burp traffic, notes, scope rules, failed tests, hypotheses, object relationships, roles, and evidence must be preserved as structured memory.
 
-3. **Every hypothesis must be testable**  
-   The system should not produce vague ideas. It should produce concrete, falsifiable next steps.
+3. **Recommendations must be contextual**  
+   Suggestions should come from the target state, not from generic vulnerability checklists.
 
-4. **Every test must update the map**  
+4. **Payloads must be adapted, not spammed**  
+   Ariadne should suggest payload families, mutation strategies, and test ideas based on parser behavior, reflection context, auth model, request flow, and previous results.
+
+5. **Every hypothesis must be testable**  
+   The system should produce concrete, falsifiable next steps.
+
+6. **Every test must update the map**  
    A failed test is not wasted. It sharpens the model of the target.
 
-5. **Every finding must be traceable**  
+7. **Every finding must be traceable**  
    A valid report should have a clear path from observation to hypothesis to test to evidence.
 
 ---
@@ -88,10 +100,14 @@ Its purpose is to help the researcher:
 - import and structure Burp observations
 - maintain a living map of the target
 - track endpoints, parameters, roles, objects, and auth boundaries
+- identify data flow across requests
 - preserve failed and successful tests
 - generate context-aware hypotheses
+- suggest payload directions and mutation ideas
+- surface relevant recon tasks and research notes
 - critique weak evidence
 - prioritize next manual tests
+- reduce repetitive research friction
 - turn validated findings into clear reports
 
 The goal is not to automate curiosity.
@@ -113,6 +129,8 @@ Ariadne is not designed to be:
 
 If Ariadne produces confidence without evidence, it has failed.
 
+If it suggests payloads without context, it has failed.
+
 If it generates activity without learning, it has failed.
 
 If it makes the researcher less precise, it has failed.
@@ -129,17 +147,18 @@ flowchart TD
     B --> C[Normalize and redact data]
     C --> D[Update target memory]
     D --> E[Build relevant context]
-    E --> F[Generate testable hypotheses]
-    F --> G[Critique evidence and assumptions]
-    G --> H[Prioritize next manual tests]
-    H --> A
-    D --> I[Trace validated findings]
-    I --> J[Draft report with evidence]
+    E --> F[Specialized agents analyze the state]
+    F --> G[Generate hypotheses, payload ideas, recon tasks]
+    G --> H[Critique evidence and assumptions]
+    H --> I[Prioritize next manual tests]
+    I --> A
+    D --> J[Trace validated findings]
+    J --> K[Draft report with evidence]
 ```
 
 The loop is the product.
 
-Every cycle should make the target map clearer.
+Every cycle should make the target map clearer and reduce the friction of the next move.
 
 ---
 
@@ -162,6 +181,7 @@ It contains:
 - observations
 - assumptions
 - hypotheses
+- payload attempts
 - failed tests
 - confirmed facts
 - contradictions
@@ -181,6 +201,8 @@ What do we know?
 What are we assuming?
 What have we already tried?
 What remains uncertain?
+Which payload directions fit this context?
+Which request affects another request?
 What should we test next?
 ```
 
@@ -204,37 +226,112 @@ ownership rules
 authorization boundaries
 state-changing actions
 sensitive data flows
+request dependencies
 interesting response differences
 ```
 
 The map is not built for decoration.
 
-It exists to support better hypotheses.
+It exists to support better hypotheses, better recommendations, and better payload selection.
 
 ---
 
-## Hypotheses Over Payloads
+## Specialized Agents
 
-Ariadne prioritizes hypotheses over payload lists.
+Ariadne is designed as a harness for specialized agents.
 
-A weak system says:
+The first version should keep these agents simple and grounded.
+
+```text
+Context Agent
+Maintains the target state, known facts, open questions, and contradictions.
+
+Reasoning Agent
+Turns observations into testable hypotheses and next-step plans.
+
+Payload Agent
+Suggests payload families, mutations, and test ideas based on the current request context.
+
+Recon Agent
+Suggests useful recon paths, documentation targets, endpoint discovery ideas, and technology-specific research.
+
+Flow Agent
+Tracks relationships between requests, objects, sessions, and downstream effects.
+
+Vulnerability-Class Agents
+Apply focused reasoning for classes like IDOR, access control, auth bypass, XSS, SSRF, injection, and business logic flaws.
+
+Skeptic Agent
+Challenges weak evidence, checks scope, identifies alternate explanations, and prevents false confidence.
+
+Report Agent
+Turns validated evidence into clear reproduction steps, impact, and remediation guidance.
+```
+
+Agents are not valuable because there are many of them.
+
+They are valuable only when they reduce friction, sharpen reasoning, preserve context, or improve test selection.
+
+---
+
+## Payloads as Creative Direction
+
+Ariadne should not be a payload dump.
+
+A weak payload system says:
 
 ```text
 Try these 100 payloads.
 ```
 
-A stronger system says:
+A stronger payload system says:
 
 ```text
-This endpoint accepts an object ID tied to account ownership.
-You changed the ID and received a 403.
-That does not disprove IDOR yet.
-Next, compare same-tenant and cross-tenant object access using two controlled accounts.
+This value appears inside a JSON string, then gets passed into a later request.
+Raw HTML payloads are probably low value here.
+Try testing parser confusion, type confusion, encoding differences, and downstream trust boundaries.
 ```
 
-Payloads are cheap.
+The Payload Agent should help the researcher ask:
 
-Context-aware test selection is valuable.
+```text
+What kind of input does this parser expect?
+Where does this value go next?
+Is this reflected, stored, transformed, normalized, or rejected?
+Does the same value appear in a later request?
+Does changing this field affect authorization, pricing, ownership, or workflow state?
+What payload family fits this exact behavior?
+```
+
+The goal is not more payloads.
+
+The goal is better payload choice.
+
+---
+
+## Recon as Research Support
+
+Ariadne should also reduce the friction of recon.
+
+Recon is not just collecting subdomains.
+
+Recon includes understanding:
+
+- the application’s architecture
+- public documentation
+- API behavior
+- JavaScript routes
+- framework-specific patterns
+- technology-specific vulnerability history
+- exposed integrations
+- authentication flows
+- business logic and object relationships
+
+Ariadne should help gather, summarize, and connect recon material to the current target state.
+
+Recon should feed the Thread.
+
+The Thread should improve recon.
 
 ---
 
@@ -253,6 +350,8 @@ Did the researcher change too many variables at once?
 Could this response be explained by CSRF, WAF, caching, role mismatch, or missing headers?
 Was this already tested?
 What would disprove the current hypothesis?
+Is the payload idea appropriate for this context?
+Is this recommendation based on evidence or generic pattern matching?
 ```
 
 Without skepticism, Ariadne becomes a confidence generator.
@@ -265,7 +364,7 @@ That is worse than useless.
 
 The human researcher remains inside the loop.
 
-Ariadne can suggest, organize, critique, and remember.
+Ariadne can suggest, organize, critique, research, remember, and recommend.
 
 The researcher still:
 
@@ -292,17 +391,19 @@ Payload adaptation modules
 Vulnerability-class specialists
 JavaScript analysis modules
 API analysis modules
+Data-flow analysis modules
 Report-writing modules
 Tool integrations
 Memory retrieval modules
 Evaluation modules
+Fine-tuned models, if justified by collected data
 ```
 
 But these are secondary.
 
 The foundation is the Thread.
 
-Without strong memory, evidence tracking, and context selection, agents only create noise faster.
+Without strong memory, evidence tracking, context selection, and feedback from manual testing, agents only create noise faster.
 
 ---
 
@@ -310,12 +411,12 @@ Without strong memory, evidence tracking, and context selection, agents only cre
 
 Ariadne should be judged by one standard:
 
-> Does it help the researcher maintain a better thread through the target?
+> Does it help the researcher maintain a better thread through the target and move from observation to testable action with less friction?
 
-If a feature does not improve orientation, memory, hypothesis quality, evidence quality, or report traceability, it does not belong in the core.
+If a feature does not improve orientation, memory, hypothesis quality, payload selection, recon direction, evidence quality, or report traceability, it does not belong in the core.
 
 ---
 
 ## One-Sentence Definition
 
-**Ariadne is a human-in-the-loop cybersecurity research harness that preserves target-specific context, generates testable hypotheses, critiques evidence, and helps researchers navigate complex digital systems without losing the thread.**
+**Ariadne is a human-in-the-loop cybersecurity research harness that coordinates specialized agents to preserve target-specific context, suggest creative tests and payload directions, critique evidence, and help researchers navigate complex digital systems without losing the thread.**
